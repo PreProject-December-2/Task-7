@@ -3,24 +3,32 @@ package ru.itmentor.spring.boot_security.demo.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.itmentor.spring.boot_security.demo.model.User;
-import ru.itmentor.spring.boot_security.demo.service.UserDS;
+import ru.itmentor.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @Controller
+@RequestMapping("/user")
 public class UserController {
-    private final UserDS userDS;
+    private final UserService userService;
 
-    public UserController(UserDS userDS) {
-        this.userDS = userDS;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @GetMapping("/user")
+
+    @GetMapping()
     public String userProfile(Model model, Principal principal) {
         String name = principal.getName();
-        User user = userDS.findByUsername(name);
-        model.addAttribute("user", user);
+        Optional<User> userOptional = userService.findByUsername(name);
+        if ((userOptional.isPresent())) {
+            User user = userOptional.get();
+            model.addAttribute("user", user);
+        }
         return "user";
     }
+
 }

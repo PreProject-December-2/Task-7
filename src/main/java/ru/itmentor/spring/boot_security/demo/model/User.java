@@ -23,6 +23,19 @@ public class User {
     public User() {
     }
 
+    public User(String name, String lastName, int title) {
+        this.name = name;
+        this.lastName = lastName;
+        this.title = title;
+    }
+
+    @ManyToMany
+    @JoinTable(name = "users_role",
+            joinColumns = @JoinColumn(name = "id_user"),
+            inverseJoinColumns = @JoinColumn(name = "id_authority"))
+    private List<Role> roles;
+
+
     public int getId() {
         return id;
     }
@@ -63,12 +76,6 @@ public class User {
         this.password = password;
     }
 
-    public User(String name, String lastName, int title) {
-        this.name = name;
-        this.lastName = lastName;
-        this.title = title;
-    }
-
     public List<Role> getRoles() {
         return roles;
     }
@@ -77,10 +84,5 @@ public class User {
         this.roles = roles;
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "users_role",
-            joinColumns = @JoinColumn(name = "id_user"),
-            inverseJoinColumns = @JoinColumn(name = "id_authority"))
-    private List<Role> roles;
 
 }
