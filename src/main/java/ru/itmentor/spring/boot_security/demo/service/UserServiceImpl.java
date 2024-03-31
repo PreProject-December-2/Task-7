@@ -1,52 +1,70 @@
 package ru.itmentor.spring.boot_security.demo.service;
 
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.itmentor.spring.boot_security.demo.model.Role;
 import ru.itmentor.spring.boot_security.demo.model.User;
+import ru.itmentor.spring.boot_security.demo.repository.RoleRepository;
+import ru.itmentor.spring.boot_security.demo.repository.UserRepository;
 
-import javax.transaction.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-@Component
-public class UserServiceImpl implements Service {
+@Service
+public class UserServiceImpl implements UserService {
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    private final UserService userService;
-
-    public UserServiceImpl(UserService userService) {
-        this.userService = userService;
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByName(username);
+    }
+
     @Transactional
     public void saveUser(User user) {
-        userService.saveUser(user);
+        Role roleUser = roleRepository.findByAuthority("ROLE_USER");
+        user.setRoles(List.of(roleUser));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
     }
-
-    @Override
-    public Optional<User> findByUsername(String username) {
-        return userService.findByUsername(username);
-    }
-
-    @Override
-    @Transactional
+@Transactional
     public void deleteUser(Integer id) {
-        userService.deleteUser(id);
+        userRepository.deleteById(id);
     }
 
-    @Override
     public List<User> showUsers() {
-        return userService.showUsers();
+        return StreamSupport.stream(userRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) {
-        return userService.loadUserByUsername(username);
-    }
 
-    @Override
     public User getUser(int id) {
-        return userService.getUser(id);
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void showUsersRoles(Integer id, String roles) {
+        User user = userRepository.findById(id).orElseThrow(()-> new UsernameNotFoundException("User not found"));
+        Role role = roleRepository.findByAuthority(roles);
+        List<Role> allRoles = new ArrayList<>();
+        allRoles.add(role);
+        user.setRoles(allRoles);
+        userRepository.save(user);
     }
 
 
