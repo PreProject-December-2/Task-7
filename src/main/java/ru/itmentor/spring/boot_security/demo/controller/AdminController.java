@@ -34,8 +34,8 @@ public class AdminController {
     }
 
     @RequestMapping("/saveUser")
-    public String saveUser(@ModelAttribute("user") User user) {
-        userService.saveUser(user);
+    public String saveUser(@ModelAttribute("user") User user,@RequestParam("role") String roleName) {
+        userService.saveUser(user,roleName);
         return "redirect:/admin/users";
     }
 

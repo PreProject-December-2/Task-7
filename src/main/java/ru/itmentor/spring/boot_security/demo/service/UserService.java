@@ -10,7 +10,7 @@ public interface UserService {
 
     public Optional<User> findByUsername(String username);
 
-    public void saveUser(User user);
+    public void saveUser(User user,String Roles);
 
     public void deleteUser(Integer id);
 

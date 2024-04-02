@@ -36,9 +36,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public void saveUser(User user) {
-        Role roleUser = roleRepository.findByAuthority("ROLE_USER");
-        user.setRoles(List.of(roleUser));
+    public void saveUser(User user, String roleName) {
+        Role role = roleRepository.findByAuthority(roleName);
+        if (role == null) {
+            throw new IllegalArgumentException("Role not found: " + roleName);
+        }
+        user.setRoles(List.of(role));
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
