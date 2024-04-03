@@ -32,8 +32,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public void saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public void saveUser(User user, Set<Role> roles) {
+        Set<Role> userRoles = new HashSet<>();
+        for (Role role : roles) {
+            Role retrievedRole = roleRepository.findByAuthority(role.getAuthority());
+            if (retrievedRole != null) {
+                userRoles.add(retrievedRole);
+            } else {
+                throw new IllegalArgumentException("Role not found: " + role.getAuthority());
+            }
+        }
+        user.setRoles(userRoles);
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        } else {
+            User existingUser = userRepository.findById(user.getId()).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+            user.setPassword(existingUser.getPassword());
+        }
         userRepository.save(user);
     }
 
@@ -53,25 +68,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void saveRoles(User user, List<String> roleNames) {
-        List<Role> roles = new ArrayList<>();
-        for (String roleName : roleNames) {
-            Role role = roleRepository.findByAuthority(roleName);
-            if (role != null) {
-                roles.add(role);
-            } else {
-                throw new IllegalArgumentException("Role not found: " + roleName);
-            }
-        }
-        user.setRoles(roles);
-        userRepository.save(user);
-    }
-
-    @Override
     public void showUserRole(Integer id, String roleName) {
         User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Role role = roleRepository.findByAuthority(roleName);
-        List<Role> allRoles = new ArrayList<>();
+        Set<Role> allRoles = new HashSet<>();
         allRoles.add(role);
         user.setRoles(allRoles);
         userRepository.save(user);

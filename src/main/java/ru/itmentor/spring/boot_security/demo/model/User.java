@@ -3,6 +3,7 @@ package ru.itmentor.spring.boot_security.demo.model;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -33,7 +34,7 @@ public class User {
     @JoinTable(name = "users_role",
             joinColumns = @JoinColumn(name = "id_user"),
             inverseJoinColumns = @JoinColumn(name = "id_authority"))
-    private List<Role> roles;
+    private Set<Role> roles;
 
 
     public int getId() {
@@ -76,11 +77,11 @@ public class User {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 

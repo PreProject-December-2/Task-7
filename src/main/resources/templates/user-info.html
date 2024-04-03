@@ -21,6 +21,17 @@
     <label>Password:</label>
     <input type="text" th:field="*{password}">
     <br><br>
+    <label>Role:</label>
+    <label>
+        <input type="checkbox" name="roleNames" value="ROLE_USER"> User
+    </label>
+    <label>
+        <input type="checkbox" name="roleNames" value="ROLE_ADMIN"> Admin
+    </label>
+    <label>
+        <input type="checkbox" name="roleNames" value="ROLE_USER,ROLE_ADMIN"> All Roles
+    </label>
+    <br><br>
     <button type="submit">OK</button>
     <br><br>
 </form>
