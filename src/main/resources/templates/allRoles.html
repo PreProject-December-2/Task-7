@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h2>User Roles</h2>
+<br>
+<form th:action="@{/admin/saveRoles}" th:object="${user}" method="post">
+    <input type="hidden" th:field="${user.id}"/>
+    <input type="hidden" th:field="${user.name}"/>
+    <input type="hidden" th:field="${user.lastName}"/>
+    <input type="hidden" th:field="${user.title}"/>
+    <input type="hidden" th:field="${user.password}">
+    <label>Role:</label>
+    <label>
+        <input type="checkbox" name="roleNames" value="ROLE_USER"> User
+    </label>
+    <label>
+        <input type="checkbox" name="roleNames" value="ROLE_ADMIN"> Admin
+    </label>
+    <label>
+        <input type="checkbox" name="roleNames" value="ROLE_USER,ROLE_ADMIN"> All Roles
+    </label>
+    <br><br>
+    <button type="submit">Save</button>
+</form>
+</body>
+</html>

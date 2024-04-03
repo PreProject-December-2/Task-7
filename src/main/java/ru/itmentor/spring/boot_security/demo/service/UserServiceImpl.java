@@ -1,8 +1,6 @@
 package ru.itmentor.spring.boot_security.demo.service;
 
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,12 +10,10 @@ import ru.itmentor.spring.boot_security.demo.model.User;
 import ru.itmentor.spring.boot_security.demo.repository.RoleRepository;
 import ru.itmentor.spring.boot_security.demo.repository.UserRepository;
 
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -36,16 +32,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public void saveUser(User user, String roleName) {
-        Role role = roleRepository.findByAuthority(roleName);
-        if (role == null) {
-            throw new IllegalArgumentException("Role not found: " + roleName);
-        }
-        user.setRoles(List.of(role));
+    public void saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
-@Transactional
+
+    @Transactional
     public void deleteUser(Integer id) {
         userRepository.deleteById(id);
     }
@@ -61,14 +53,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void showUsersRoles(Integer id, String roles) {
-        User user = userRepository.findById(id).orElseThrow(()-> new UsernameNotFoundException("User not found"));
-        Role role = roleRepository.findByAuthority(roles);
+    public void saveRoles(User user, List<String> roleNames) {
+        List<Role> roles = new ArrayList<>();
+        for (String roleName : roleNames) {
+            Role role = roleRepository.findByAuthority(roleName);
+            if (role != null) {
+                roles.add(role);
+            } else {
+                throw new IllegalArgumentException("Role not found: " + roleName);
+            }
+        }
+        user.setRoles(roles);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void showUserRole(Integer id, String roleName) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Role role = roleRepository.findByAuthority(roleName);
         List<Role> allRoles = new ArrayList<>();
         allRoles.add(role);
         user.setRoles(allRoles);
         userRepository.save(user);
     }
-
-
 }
+
+
+
+

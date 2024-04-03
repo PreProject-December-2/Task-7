@@ -10,7 +10,7 @@ public interface UserService {
 
     public Optional<User> findByUsername(String username);
 
-    public void saveUser(User user,String Roles);
+    public void saveUser(User user);
 
     public void deleteUser(Integer id);
 
@@ -18,5 +18,9 @@ public interface UserService {
 
     public User getUser(int id);
 
-    public void showUsersRoles(Integer id, String roles);
+    public void saveRoles(User user, List<String> roleNames);
+
+    public void showUserRole(Integer id, String roleName);
+
+
 }

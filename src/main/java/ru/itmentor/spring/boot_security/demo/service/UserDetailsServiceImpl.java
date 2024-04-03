@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component;
 import ru.itmentor.spring.boot_security.demo.model.User;
 
 import java.util.stream.Collectors;
+
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService {
-     private final UserService userService;
+    private final UserService userService;
 
     public UserDetailsServiceImpl(UserService userService) {
         this.userService = userService;

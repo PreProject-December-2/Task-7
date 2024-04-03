@@ -3,6 +3,7 @@ package ru.itmentor.spring.boot_security.demo.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.itmentor.spring.boot_security.demo.model.User;
 import ru.itmentor.spring.boot_security.demo.service.UserService;
 
@@ -34,8 +35,8 @@ public class AdminController {
     }
 
     @RequestMapping("/saveUser")
-    public String saveUser(@ModelAttribute("user") User user,@RequestParam("role") String roleName) {
-        userService.saveUser(user,roleName);
+    public String saveUser(@ModelAttribute("user") User user) {
+        userService.saveUser(user);
         return "redirect:/admin/users";
     }
 
@@ -51,9 +52,19 @@ public class AdminController {
         userService.deleteUser(id);
         return "redirect:/admin/users";
     }
-@PostMapping("/updateRoles")
-    public String roles(@RequestParam("usId") int id,@RequestParam("roles") String roles){
-        userService.showUsersRoles(id,roles);
+
+    @RequestMapping("/updateRoles")
+    public String updateRoles(@RequestParam("usId") int id, @RequestParam(name = "role", required = false) String role, Model model) {
+        User user = userService.getUser(id);
+        userService.showUserRole(id, role);
+        model.addAttribute("user", user);
+        return "allRoles";
+    }
+
+    @RequestMapping("/saveRoles")
+    public String saveRoles(@ModelAttribute("user") User user, @RequestParam("roleNames") List<String> roleNames, RedirectAttributes redirectAttributes) {
+        userService.saveRoles(user, roleNames);
+        redirectAttributes.addFlashAttribute("successMessage", "Roles saved successfully for user with ID: " + user.getId());
         return "redirect:/admin/users";
-}
+    }
 }

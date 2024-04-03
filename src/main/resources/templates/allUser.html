@@ -21,10 +21,15 @@
                 <input type="hidden" name="usId" th:value="${usr.id}"/>
                 <button type="submit">Update</button>
             </form>
+            <form th:action="@{/admin/updateRoles}" method="post">
+                <input type="hidden" name="usId" th:value="${usr.id}"/>
+                <button type="submit">Roles</button>
+            </form>
             <form th:action="@{/admin/deleteUser}" method="post">
                 <input type="hidden" name="usId" th:value="${usr.id}"/>
                 <button type="submit">Delete</button>
             </form>
+
 
         </td>
     </tr>
