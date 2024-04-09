@@ -9,10 +9,12 @@ import ru.itmentor.spring.boot_security.demo.model.Role;
 import ru.itmentor.spring.boot_security.demo.model.User;
 import ru.itmentor.spring.boot_security.demo.repository.RoleRepository;
 import ru.itmentor.spring.boot_security.demo.repository.UserRepository;
+import ru.itmentor.spring.boot_security.demo.util.UserNotFoundException;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+import java.util.Set;
 
 
 @Service
@@ -32,7 +34,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Transactional
-    public void saveUser(User user, Set<Role> roles) {
+    public User saveUser(User user, Set<Role> roles) {
         Set<Role> userRoles = new HashSet<>();
         for (Role role : roles) {
             Role retrievedRole = roleRepository.findByAuthority(role.getAuthority());
@@ -50,6 +52,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(existingUser.getPassword());
         }
         userRepository.save(user);
+        return user;
     }
 
     @Transactional
@@ -64,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
 
     public User getUser(int id) {
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
     @Override

@@ -7,8 +7,8 @@ import ru.itmentor.spring.boot_security.demo.model.User;
 
 import java.util.Optional;
 
-@Repository
-public interface UserRepository extends CrudRepository<User, Integer> {
+    @Repository
+    public interface UserRepository extends CrudRepository<User, Integer> {
 
 
     Optional<User> findByName(String username);

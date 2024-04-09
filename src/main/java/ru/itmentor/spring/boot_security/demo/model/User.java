@@ -2,6 +2,8 @@ package ru.itmentor.spring.boot_security.demo.model;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Set;
 
@@ -13,12 +15,15 @@ public class User {
     @Column(name = "id")
     private int id;
     @Column(name = "name")
+    @NotEmpty(message = "Name should not be empty")
     private String name;
     @Column(name = "last_name")
+    @NotEmpty(message = "lastName should not be empty")
     private String lastName;
     @Column(name = "tittle")
     private int title;
     @Column(name = "password")
+    @NotEmpty(message = "Password should not be empty")
     private String password;
 
     public User() {

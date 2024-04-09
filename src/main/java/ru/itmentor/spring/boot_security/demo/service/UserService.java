@@ -11,7 +11,7 @@ public interface UserService {
 
     public Optional<User> findByUsername(String username);
 
-    public void saveUser(User user, Set<Role> roleNames);
+    public User saveUser(User user, Set<Role> roleNames);
 
     public void deleteUser(Integer id);
 

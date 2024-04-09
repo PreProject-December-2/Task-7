@@ -1,6 +1,7 @@
 package ru.itmentor.spring.boot_security.demo.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "role")
@@ -9,6 +10,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "authority")
+    @NotEmpty(message = "authority should not be empty")
     private String authority;
 
     public Role() {
